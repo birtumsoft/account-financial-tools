@@ -1,9 +1,22 @@
 # © 2016 ADHOC SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import models, fields
+from odoo import models, fields, api
 import datetime
 
+class AccountPaymentMethodAW(models.Model):
+    _inherit = 'account.payment.method'
+
+    @api.model
+    def _get_payment_method_information(self):
+        res = super(AccountPaymentMethodAW, self)._get_payment_method_information()
+        res['inbound_debit_card'] =  {'mode': 'multi', 'domain': [('type', 'in', ('bank', 'cash'))]}
+        res['outbound_debit_card'] = {'mode': 'multi', 'domain': [('type', 'in', ('bank', 'cash'))]}
+        res['inbound_credit_card'] =  {'mode': 'multi', 'domain': [('type', 'in', ('bank', 'cash'))]}
+        res['outbound_credit_card'] = {'mode': 'multi', 'domain': [('type', 'in', ('bank', 'cash'))]}
+        res['outbound_online'] =  {'mode': 'multi', 'domain': [('type', 'in', ('bank', 'cash'))]}
+        res['inbound_online'] = {'mode': 'multi', 'domain': [('type', 'in', ('bank', 'cash'))]}
+        return res
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"

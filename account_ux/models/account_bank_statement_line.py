@@ -17,5 +17,5 @@ class AccountBankStatementLine(models.Model):
 
     # TODO remove in version 15.0 only needed to clean up some statements with move name is set and it should not in
     # order to be able to reconcile the line statement line in future
-    def button_fix_clean_move_name(self):
-        self.write({'move_name': False})
+    #def button_fix_clean_move_name(self):
+    #    self.write({'move_name': False})

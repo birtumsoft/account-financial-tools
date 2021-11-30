@@ -12,7 +12,7 @@ class AccountMoveLine(models.Model):
 
     # TODO remove or don't store on v15, use new functionality to be able to group without storing
     user_id = fields.Many2one(
-        string='Contact Salesperson', related='partner_id.user_id', store=True,
+        string='Contact Salesperson', related='partner_id.user_id', store=False,
         help='Salesperson of contact related to this journal item')
 
     def get_model_id_and_name(self):
@@ -40,24 +40,24 @@ class AccountMoveLine(models.Model):
             'views': [[view_id, 'form']],
             'res_id': res_id,
         }
-
-    def _reconcile_lines(self, debit_moves, credit_moves, field):
-        """ Modificamos contexto para que odoo solo concilie el metodo
-        auto_reconcile_lines teniendo en cuenta la moneda de cia si la cuenta
-        no tiene moneda.
-        Va de la mano de la modificación de "create" en
-        account.partial.reconcile
-        Para que este cambio funcione bien es ademas importante este parche en odoo
-        https://github.com/odoo/odoo/pull/63390
-        """
+    """
+    def _reconciled_lines(self):
+        #Modificamos contexto para que odoo solo concilie el metodo
+        #auto_reconcile_lines teniendo en cuenta la moneda de cia si la cuenta
+        #no tiene moneda.
+        #Va de la mano de la modificación de "create" en
+        #account.partial.reconcile
+        #Para que este cambio funcione bien es ademas importante este parche en odoo
+        #https://github.com/odoo/odoo/pull/63390
         if self and self[0].company_id.country_id == self.env.ref('base.ar') and not self[0].account_id.currency_id:
             field = 'amount_residual'
         return super()._reconcile_lines(debit_moves, credit_moves, field)
-
-    def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):
+    """
+    
+    def reconcile(self):
         """ This is needed if you reconcile, for eg, 1 USD to 1 USD but in an ARS account, by default
         odoo make a full reconcile and exchange
         """
         if self and self[0].company_id.country_id == self.env.ref('base.ar') and not self[0].account_id.currency_id:
             self = self.with_context(no_exchange_difference=True)
-        return super().reconcile(writeoff_acc_id=writeoff_acc_id, writeoff_journal_id=writeoff_journal_id)
+        return super(AccountMoveLine,self).reconcile()
