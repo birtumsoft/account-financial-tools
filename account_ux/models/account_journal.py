@@ -47,17 +47,21 @@ class AccountJournal(models.Model):
                 default.get('default_credit_account_id')) if default else False
             if not default_account:
                 company = self.company_id
+                account_vals = self._prepare_liquidity_account_vals(company, rec.code, {'name': rec.name, 'currency_id': rec.currency_id.id})
+                """
                 account_vals = self._prepare_liquidity_account(
                     rec.name,
                     company,
                     rec.currency_id.id,
                     rec.type)
+                """
                 default_account = self.env['account.account'].create(
                     account_vals)
-                rec.write({
-                    'default_debit_account_id': default_account.id,
-                    'default_credit_account_id': default_account.id,
-                })
+                rec.write({'default_account_id': default_account.id})
+                #rec.write({
+                #    'default_debit_account_id': default_account.id,
+                #    'default_credit_account_id': default_account.id,
+                #})
         return rec
 
     def write(self, vals):
