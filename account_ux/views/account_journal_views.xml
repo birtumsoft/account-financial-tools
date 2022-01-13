@@ -5,7 +5,10 @@
         <field name="model">account.journal</field>
         <field name="inherit_id" ref="account.view_account_journal_form"/>
         <field name="arch" type="xml">
+        	<!--
             <field name="inbound_payment_method_line_ids" position="after">
+            -->
+            <field name="inbound_payment_method_ids" position="after">
                 <field name="debit_card_days_for_collection" attrs="{'invisible':[('type', 'not in', ['bank','cash'])]}"/>
                 <field name="credit_card_days_for_collection" attrs="{'invisible':[('type', 'not in', ['bank','cash'])]}"/>
             </field>
